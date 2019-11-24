@@ -1,3 +1,6 @@
 pose-detection/face/*
 pose-detection/hand/*
 pose-detection/pose/*
+pose-detection/*.jp
+pose-detection/*.png
+pose-detection/*.gif
