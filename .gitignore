@@ -4,3 +4,10 @@ pose-detection/pose/*
 pose-detection/*.jp
 pose-detection/*.png
 pose-detection/*.gif
+pose-detection/
+
+clothEnv/
+
+MongoDB/
+
+pose-detection/pose/coco/pose_iter_440000.caffemodel
