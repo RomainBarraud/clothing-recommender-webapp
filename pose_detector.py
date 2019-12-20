@@ -4,6 +4,7 @@ import time
 from flask import jsonify
 from cv2 import cv2
 
+
 protoFile = "pose-detection/pose/coco/pose_deploy_linevec.prototxt"
 weightsFile = "pose-detection/pose/coco/pose_iter_440000.caffemodel"
 
@@ -25,14 +26,14 @@ nPoints = 18
 POSE_PAIRS = [ [1,0],[1,2],[1,5],[2,3],[3,4],[5,6],[6,7],[1,8],[8,9],[9,10],[1,11],[11,12],[12,13],[0,14],[0,15],[14,16],[15,17]]
 POSE_HEAD = [ [BODY_DICT['ear_right'], BODY_DICT['ear_left']], [BODY_DICT['ear_left'], BODY_DICT['neck']], [BODY_DICT['neck'], BODY_DICT['ear_right']] ]
 
-def pose_main(net):
+def pose_main(myImagePath):
     """detect pose"""
 
     #data = request.json
     #myPose = data["myPose"]
 
     print("will read image")
-    frame = cv2.imread("./client_images/images_input/black-male.jpg")
+    frame = cv2.imread(myImagePath)
     frameCopy = np.copy(frame)
     frameWidth = frame.shape[1]
     frameHeight = frame.shape[0]
@@ -46,6 +47,8 @@ def pose_main(net):
     inHeight = 368
     inpBlob = cv2.dnn.blobFromImage(frame, 1.0 / 255, (inWidth, inHeight),
                             (0, 0, 0), swapRB=False, crop=False)
+
+    net = cv2.dnn.readNetFromCaffe(protoFile, weightsFile)
 
     net.setInput(inpBlob)
 

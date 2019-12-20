@@ -8,6 +8,7 @@ import numpy as np
 from cv2 import cv2
 
 import pose_detector
+#import clothing_classfiers
 
 #model_face = tf.keras.models.load_model("gender_model.h5")
 #model_whole_body = tf.keras.models.load_model("model_whole.h5")
@@ -18,9 +19,6 @@ import pose_detector
 UPLOAD_FOLDER = 'static'
 ALLOWED_EXTENSIONS = set(['jpg', 'jpeg'])
 
-protoFile = "pose-detection/pose/coco/pose_deploy_linevec.prototxt"
-weightsFile = "pose-detection/pose/coco/pose_iter_440000.caffemodel"
-myPoseNet = cv2.dnn.readNetFromCaffe(protoFile, weightsFile)
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -56,7 +54,7 @@ def render_home():
             #     img_whole=img_upper,
             #     img_upper=img_whole,
             #     img_lower=img_lower)
-            #return pose_detector.pose_main(myPoseNet)
+            return pose_detector.pose_main("./client_images/images_input/black-male.jpg")
 
 
 @app.route("/recommendations", methods=["POST"])
@@ -74,7 +72,7 @@ def master_function():
         file.save(os.path.join(UPLOAD_FOLDER, img_path))
 
     #recs = p.get_recs('static/'+img_path)
-    return pose_detector.pose_main(myPoseNet)
+    return pose_detector.pose_main()
 
 
 @app.route('/recs', methods=['POST'])
