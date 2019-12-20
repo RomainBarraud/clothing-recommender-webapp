@@ -3,18 +3,21 @@ from werkzeug.utils import secure_filename
 import os
 import time
 import numpy as np
-#import tensorflow as tf
+import tensorflow as tf
 
 from cv2 import cv2
 
 import pose_detector
 #import clothing_classfiers
 
-#model_face = tf.keras.models.load_model("gender_model.h5")
+model_gender = tf.keras.models.load_model("./models/model_gender.h5")
 #model_whole_body = tf.keras.models.load_model("model_whole.h5")
 #model_upper_body = tf.keras.models.load_model("model_upper.h5")
 #model_lower_body = tf.keras.models.load_model("model_lower.h5")
-
+IMG_GENDER_HEIGHT = 80
+IMG_GENDER_WIDTH = 80
+IMG_HEIGHT = 256
+IMG_WIDTH = 256
 
 UPLOAD_FOLDER = 'client_images'
 ALLOWED_EXTENSIONS = set(['jpg', 'jpeg'])
@@ -45,6 +48,7 @@ def render_home():
         if file and allowed_file(file.filename):
             img_name = secure_filename(file.filename)
             img_name_short = img_name.rsplit('.', 1)[0]
+            img_extenstion = img_name.rsplit('.', 1)[1]
             img_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
             file.save(img_path)
 
@@ -58,26 +62,9 @@ def render_home():
 
             photo_analyser = pose_detector.pose_main(img_path, img_name_short)
 
+            image_head = cv2.imread(oos.path.join("./static/uploaded_pictures" , str(img_name_short) + '_Head.jpg'))
+
             return render_template('index.html')
-
-
-@app.route("/recommendations", methods=["POST"])
-def master_function():
-    if 'img' not in request.files:
-        return render_template('index.html')
-
-    file = request.files['img']
-
-    if file.filename == '':
-        return render_template('index.html')
-
-    if file and allowed_file(file.filename):
-        img_path = secure_filename(file.filename)
-        file.save(os.path.join(UPLOAD_FOLDER, img_path))
-
-    #recs = p.get_recs('static/'+img_path)
-    
-    return pose_detector.pose_main("./client_images/images_input/black-male.jpg")
 
 
 @app.route('/recs', methods=['POST'])
