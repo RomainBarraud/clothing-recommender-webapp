@@ -16,7 +16,7 @@ import pose_detector
 #model_lower_body = tf.keras.models.load_model("model_lower.h5")
 
 
-UPLOAD_FOLDER = 'static'
+UPLOAD_FOLDER = 'client_images'
 ALLOWED_EXTENSIONS = set(['jpg', 'jpeg'])
 
 
@@ -43,10 +43,9 @@ def render_home():
             return render_template('index.html')
 
         if file and allowed_file(file.filename):
-            img_path = secure_filename(file.filename)
-            #file.save(os.path.join(UPLOAD_FOLDER, img_path))
-            full_filename = os.path.join(app.config['UPLOAD_FOLDER'], 'uploaded_pictures', 'RomainBarraudPhoto.jpg')
-
+            img_name = secure_filename(file.filename)
+            img_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+            file.save(img_path)
 
             #return render_template("display_image.html",\
             #     img_input=img_input,
@@ -54,7 +53,8 @@ def render_home():
             #     img_whole=img_upper,
             #     img_upper=img_whole,
             #     img_lower=img_lower)
-            return pose_detector.pose_main("./client_images/images_input/black-male.jpg")
+            #return pose_detector.pose_main("./client_images/images_input/black-male.jpg")
+            return pose_detector.pose_main(img_path)
 
 
 @app.route("/recommendations", methods=["POST"])
@@ -72,7 +72,7 @@ def master_function():
         file.save(os.path.join(UPLOAD_FOLDER, img_path))
 
     #recs = p.get_recs('static/'+img_path)
-    return pose_detector.pose_main()
+    return pose_detector.pose_main("./client_images/images_input/black-male.jpg")
 
 
 @app.route('/recs', methods=['POST'])

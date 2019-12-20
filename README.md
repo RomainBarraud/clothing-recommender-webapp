@@ -53,6 +53,7 @@ Load the four h5 models, or rerun the notebooks, to classify respectively the fa
 ## References
 [ISOM5240 – Deep Learning Applications for Business. HKUST by James S H KWOK](https://www.ust.hk)<br/>
 [Gender age ethnicity classification](https://sanjayasubedi.com.np/deeplearning/multioutput-keras/)<br/>
+[Posenet application](https://www.learnopencv.com/deep-learning-based-human-pose-estimation-using-opencv-cpp-python/)<br/>
 [Women recommender system](https://medium.com/@sjacks/building-a-womens-fashion-recommender-2683856b97e3)<br/>
 [Deep Fashion tuning](https://medium.com/@birdortyedi_23820/deep-learning-lab-episode-4-deep-fashion-2df9e15a63e1)<br/>
 [Tensorflow](https://www.tensorflow.org/)<br/>
