@@ -44,6 +44,7 @@ def render_home():
 
         if file and allowed_file(file.filename):
             img_name = secure_filename(file.filename)
+            img_name_short = img_name.rsplit('.', 1)[0]
             img_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
             file.save(img_path)
 
@@ -54,7 +55,10 @@ def render_home():
             #     img_upper=img_whole,
             #     img_lower=img_lower)
             #return pose_detector.pose_main("./client_images/images_input/black-male.jpg")
-            return pose_detector.pose_main(img_path)
+
+            photo_analyser = pose_detector.pose_main(img_path, img_name_short)
+
+            return render_template('index.html')
 
 
 @app.route("/recommendations", methods=["POST"])
@@ -72,6 +76,7 @@ def master_function():
         file.save(os.path.join(UPLOAD_FOLDER, img_path))
 
     #recs = p.get_recs('static/'+img_path)
+    
     return pose_detector.pose_main("./client_images/images_input/black-male.jpg")
 
 
@@ -90,7 +95,7 @@ def make_recs():
         img_path = secure_filename(file.filename)
         file.save(os.path.join(UPLOAD_FOLDER, img_path))
 
-    recs = p.get_recs('static/'+img_path)
+    recs = p.get_recs('static/' + img_path)
     return render_template('show_rec_imgs.html', img_path=url_for('static', filename=img_path), images=recs[0], urls=recs[2])
 
 

@@ -44,7 +44,7 @@ y2_lower = [10, 13]
 
 points_list = [x1_head, x1_upper, x1_lower, x2_head, x2_upper, x2_lower, y1_head, y1_upper, y1_lower, y2_head, y2_upper, y2_lower]
 
-def pose_main(myImagePath):
+def pose_main(myImagePath, imageName):
     """detect pose"""
 
     #data = request.json
@@ -138,7 +138,8 @@ def pose_main(myImagePath):
         else:
             for i, biPoint in enumerate(corner):
                 corner[i] = biPoint[0]
-            corner = int(round(min(corner) * 0.75, 0)) # expansion to get a wider frame
+            #corner = #int(round(min(corner) * 0.75, 0)) # expansion to get a wider frame
+            corner = min(corner)
         points_list[num] = corner
     
     print("points_list: ", points_list)
@@ -189,34 +190,51 @@ def pose_main(myImagePath):
         "y1_head": points_list[6], "y1_upper": points_list[7], "y1_lower": points_list[8],\
         "y2_head": points_list[9], "y2_upper": points_list[10], "y2_lower": points_list[11]
         }
+
     print(points_dict)
     print("will draw")
+
     cv2.line(frame, (points_dict['x1_head'], points_dict['y1_head']), (points_dict['x2_head'], points_dict['y1_head']), (0, 255, 255), 2)
     cv2.line(frame, (points_dict['x2_head'], points_dict['y1_head']), (points_dict['x2_head'], points_dict['y2_head']), (0, 255, 255), 2)
     cv2.line(frame, (points_dict['x2_head'], points_dict['y2_head']), (points_dict['x1_head'], points_dict['y2_head']), (0, 255, 255), 2)
     cv2.line(frame, (points_dict['x1_head'], points_dict['y2_head']), (points_dict['x1_head'], points_dict['y1_head']), (0, 255, 255), 2)
-
+    print("passed head")
     cv2.line(frame, (points_dict['x1_upper'], points_dict['y1_upper']), (points_dict['x2_upper'], points_dict['y1_upper']), (255, 0, 255), 2)
     cv2.line(frame, (points_dict['x2_upper'], points_dict['y1_upper']), (points_dict['x2_upper'], points_dict['y2_upper']), (255, 0, 255), 2)
     cv2.line(frame, (points_dict['x2_upper'], points_dict['y2_upper']), (points_dict['x1_upper'], points_dict['y2_upper']), (255, 0, 255), 2)
     cv2.line(frame, (points_dict['x1_upper'], points_dict['y2_upper']), (points_dict['x1_upper'], points_dict['y1_upper']), (255, 0, 255), 2)
-
+    print("passed upper")
     cv2.line(frame, (points_dict['x1_lower'], points_dict['y1_lower']), (points_dict['x2_lower'], points_dict['y1_lower']), (255, 255, 0), 2)
     cv2.line(frame, (points_dict['x2_lower'], points_dict['y1_lower']), (points_dict['x2_lower'], points_dict['y2_lower']), (255, 255, 0), 2)
     cv2.line(frame, (points_dict['x2_lower'], points_dict['y2_lower']), (points_dict['x1_lower'], points_dict['y2_lower']), (255, 255, 0), 2)
     cv2.line(frame, (points_dict['x1_lower'], points_dict['y2_lower']), (points_dict['x1_lower'], points_dict['y1_lower']), (255, 255, 0), 2)
+    print("passed lower")
 
-    cv2.imwrite(os.path.join("./static/uploaded_pictures" , 'waka.jpg'), frameCopy)
-    cv2.imwrite(os.path.join("./static/uploaded_pictures" , 'waka.jpg'), frame)
+    #crop_img_head = frame[x1_head: x2_head, y1_head: y2_head]
+    #cv2.imshow("crop_img_head", crop_img_head)
+
     print("Image saved")
-    cv2.imshow('Output-Keypoints', frameCopy)
-    cv2.imshow('Output-Skeleton', frame)
+    #cv2.imshow('Output-Keypoints', frameCopy)
+    #cv2.imshow('Output-Skeleton', frame)
+    print("first show")
+    head_image = frameCopy[points_dict['y1_head']: points_dict['y2_head'], points_dict['x1_head']: points_dict['x2_head']]
+    upper_image = frameCopy[points_dict['y1_upper']: points_dict['y2_upper'], points_dict['x1_upper']: points_dict['x2_upper']]
+    lower_image = frameCopy[points_dict['y1_lower']: points_dict['y2_lower'], points_dict['x1_lower']: points_dict['x2_lower']]
+
+    #cv2.imshow('Output-Head', head_image)
+    #cv2.imshow('Output-Upper', upper_image)
+    #cv2.imshow('Output-Lower', lower_image)
+    cv2.imwrite(os.path.join("./static/uploaded_pictures" , str(imageName) + '_Whole.jpg'), frameCopy)
+    cv2.imwrite(os.path.join("./static/uploaded_pictures" , str(imageName) + '_Head.jpg'), head_image)
+    cv2.imwrite(os.path.join("./static/uploaded_pictures" , str(imageName) +' _Upper.jpg'), upper_image)
+    cv2.imwrite(os.path.join("./static/uploaded_pictures" , str(imageName) +' _Lower.jpg'), lower_image)
 
     #cv2.imwrite('./client_images/images_output/Output-Keypoints.jpg', frameCopy)
     #cv2.imwrite('./client_images/images_output/Output-Skeleton.jpg', frame)
 
     print("Total time taken : {:.3f}".format(time.time() - t))
 
-    cv2.waitKey(0)
+    #cv2.waitKey(0)
 
-    return jsonify({"status": "success"})
+    #return jsonify({"status": "success"})
+    return "success"
