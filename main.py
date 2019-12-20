@@ -8,19 +8,18 @@ import tensorflow as tf
 from cv2 import cv2
 
 import pose_detector
-#import clothing_classfiers
+import clothing_classfiers
 
-model_gender = tf.keras.models.load_model("./models/model_gender.h5")
-#model_whole_body = tf.keras.models.load_model("model_whole.h5")
-#model_upper_body = tf.keras.models.load_model("model_upper.h5")
-#model_lower_body = tf.keras.models.load_model("model_lower.h5")
-IMG_GENDER_HEIGHT = 80
-IMG_GENDER_WIDTH = 80
+
+IMG_GENDER_HEIGHT = 150
+IMG_GENDER_WIDTH = 150
 IMG_HEIGHT = 256
 IMG_WIDTH = 256
 
-UPLOAD_FOLDER = 'client_images'
+UPLOAD_FOLDER = './static/uploaded_pictures'
 ALLOWED_EXTENSIONS = set(['jpg', 'jpeg'])
+
+INVENTORY_PATH = './static/inventory'
 
 
 app = Flask(__name__)
@@ -48,7 +47,7 @@ def render_home():
         if file and allowed_file(file.filename):
             img_name = secure_filename(file.filename)
             img_name_short = img_name.rsplit('.', 1)[0]
-            img_extenstion = img_name.rsplit('.', 1)[1]
+            img_extension = img_name.rsplit('.', 1)[1]
             img_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
             file.save(img_path)
 
@@ -62,28 +61,25 @@ def render_home():
 
             photo_analyser = pose_detector.pose_main(img_path, img_name_short)
 
-            image_head = cv2.imread(oos.path.join("./static/uploaded_pictures" , str(img_name_short) + '_Head.jpg'))
+            image_head = cv2.imread(os.path.join("./static/uploaded_pictures" , str(img_name_short) + '_Head.jpg'), cv2.IMREAD_GRAYSCALE)
+            gender = clothing_classfiers.predict_gender(image_head, IMG_GENDER_HEIGHT, IMG_GENDER_WIDTH)
 
-            return render_template('index.html')
+            image_upper = cv2.imread(os.path.join("./static/uploaded_pictures" , str(img_name_short) + '_Upper.jpg'))
+            clothing_upper = clothing_classfiers.predict_upper(image_upper, IMG_HEIGHT, IMG_WIDTH)
+            clothing_upper_path = os.path.join(INVENTORY_PATH, clothing_upper)
 
+            if photo_analyser: # found lower clothing
+                image_lower = cv2.imread(os.path.join("./static/uploaded_pictures" , str(img_name_short) + '_Lower.jpg'))
+                clothing_lower = clothing_classfiers.predict_lower(image_lower, IMG_HEIGHT, IMG_WIDTH)
+                clothing_lower_path = os.path.join(INVENTORY_PATH, clothing_lower)
 
-@app.route('/recs', methods=['POST'])
-def make_recs():
+            image_whole = cv2.imread(os.path.join("./static/uploaded_pictures" , str(img_name_short) + '_Whole.jpg'))
+            clothing_whole = clothing_classfiers.predict_whole(image_whole, IMG_HEIGHT, IMG_WIDTH)
+            clothing_whole_path = os.path.join(INVENTORY_PATH, clothing_whole)
 
-    if 'img' not in request.files:
-        return render_template('index.html')
+            clothing_boxed = cv2.imread(os.path.join("./static/uploaded_pictures" , str(img_name_short) + '_Boxed.jpg'))
 
-    file = request.files['img']
-
-    if file.filename == '':
-        return render_template('index.html')
-
-    if file and allowed_file(file.filename):
-        img_path = secure_filename(file.filename)
-        file.save(os.path.join(UPLOAD_FOLDER, img_path))
-
-    recs = p.get_recs('static/' + img_path)
-    return render_template('show_rec_imgs.html', img_path=url_for('static', filename=img_path), images=recs[0], urls=recs[2])
+            return render_template('recommendations.html')
 
 
 if __name__ == "__main__":
