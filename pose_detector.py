@@ -113,15 +113,6 @@ def pose_main(myImagePath):
             #cv2.line(frame, points[partA], points[partB], (0, 255, 255), 2)
             #cv2.circle(frame, points[partA], 8, (0, 0, 255), thickness=-1, lineType=cv2.FILLED)
 
-    # Draw Head Frame
-    for pair in POSE_HEAD:
-        partA = pair[0]
-        print("part A: ", points[partA])
-        partB = pair[1]
-
-        if points[partA] and points[partB]:
-            cv2.line(frame, points[partA], points[partB], (0, 255, 255), 2)
-
     print("points_list: ", points_list)
     for num, corner in enumerate(points_list):
         print(corner)
@@ -136,42 +127,84 @@ def pose_main(myImagePath):
         print(num)
         print("corner: ", points_list[num])
 
+    print("points_list: ", points_list)
+    print("len: ", len(points_list))
+
     print("x1_list")
-    for corner in points_list[0:3]:
+    for num, corner in enumerate(points_list[0:3]):
         print(corner)
         if corner == []:
             corner = 0
         else:
             for i, biPoint in enumerate(corner):
                 corner[i] = biPoint[0]
-            corner = min(corner)
+            corner = int(round(min(corner) * 0.75, 0)) # expansion to get a wider frame
+        points_list[num] = corner
+    
+    print("points_list: ", points_list)
+    print("len: ", len(points_list))    
 
     print("x2_list")
-    for corner in points_list[3:5]:
+    print(points_list[3:5])
+    for num, corner in enumerate(points_list[3:6]):
+        print("points_list[3:5]: ", points_list[3:6])
+        print(num)
+        print(corner)
         if corner == []:
             corner = frameWidth
         else:
             for i, biPoint in enumerate(corner):
                 corner[i] = biPoint[0]
+            #corner = min(max(corner) * 1.1, frameWidth) # expansion to get a wider frame
             corner = max(corner)
+        points_list[num + 3] = corner
 
     print("y1_list")
-    for corner in points_list[5:7]:
+    for num, corner in enumerate(points_list[6:9]):
         if corner == []:
             corner = 0
         else:
             for i, biPoint in enumerate(corner):
                 corner[i] = biPoint[0]
-            corner = min(corner)
+            corner = min(corner) #* 0.9 # expansion to get a wider frame
+        points_list[num + 6] = corner
 
     print("y2_list")
-    for corner in points_list[7:9]:
+    for num, corner in enumerate(points_list[9:]):
         if corner == []:
             corner = frameHeight
         else:
             for i, biPoint in enumerate(corner):
                 corner[i] = biPoint[0]
+            #corner = max(max(corner) * 1.1, frameHeight) # expansion to get a wider frame
             corner = max(corner)
+        points_list[num + 9] = corner
+
+    print("points_list: ", points_list)
+    print("len: ", len(points_list))    
+
+    points_dict = {
+        "x1_head": points_list[0], "x1_upper": points_list[1], "x1_lower": points_list[2],\
+        "x2_head": points_list[3], "x2_upper": points_list[4], "x2_lower": points_list[5],\
+        "y1_head": points_list[6], "y1_upper": points_list[7], "y1_lower": points_list[8],\
+        "y2_head": points_list[9], "y2_upper": points_list[10], "y2_lower": points_list[11]
+        }
+    print(points_dict)
+    print("will draw")
+    cv2.line(frame, (points_dict['x1_head'], points_dict['y1_head']), (points_dict['x2_head'], points_dict['y1_head']), (0, 255, 255), 2)
+    cv2.line(frame, (points_dict['x2_head'], points_dict['y1_head']), (points_dict['x2_head'], points_dict['y2_head']), (0, 255, 255), 2)
+    cv2.line(frame, (points_dict['x2_head'], points_dict['y2_head']), (points_dict['x1_head'], points_dict['y2_head']), (0, 255, 255), 2)
+    cv2.line(frame, (points_dict['x1_head'], points_dict['y2_head']), (points_dict['x1_head'], points_dict['y1_head']), (0, 255, 255), 2)
+
+    cv2.line(frame, (points_dict['x1_upper'], points_dict['y1_upper']), (points_dict['x2_upper'], points_dict['y1_upper']), (255, 0, 255), 2)
+    cv2.line(frame, (points_dict['x2_upper'], points_dict['y1_upper']), (points_dict['x2_upper'], points_dict['y2_upper']), (255, 0, 255), 2)
+    cv2.line(frame, (points_dict['x2_upper'], points_dict['y2_upper']), (points_dict['x1_upper'], points_dict['y2_upper']), (255, 0, 255), 2)
+    cv2.line(frame, (points_dict['x1_upper'], points_dict['y2_upper']), (points_dict['x1_upper'], points_dict['y1_upper']), (255, 0, 255), 2)
+
+    cv2.line(frame, (points_dict['x1_lower'], points_dict['y1_lower']), (points_dict['x2_lower'], points_dict['y1_lower']), (255, 255, 0), 2)
+    cv2.line(frame, (points_dict['x2_lower'], points_dict['y1_lower']), (points_dict['x2_lower'], points_dict['y2_lower']), (255, 255, 0), 2)
+    cv2.line(frame, (points_dict['x2_lower'], points_dict['y2_lower']), (points_dict['x1_lower'], points_dict['y2_lower']), (255, 255, 0), 2)
+    cv2.line(frame, (points_dict['x1_lower'], points_dict['y2_lower']), (points_dict['x1_lower'], points_dict['y1_lower']), (255, 255, 0), 2)
 
     cv2.imwrite(os.path.join("./static/uploaded_pictures" , 'waka.jpg'), frameCopy)
     cv2.imwrite(os.path.join("./static/uploaded_pictures" , 'waka.jpg'), frame)
