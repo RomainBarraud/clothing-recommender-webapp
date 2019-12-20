@@ -15,3 +15,8 @@ pose-detection/pose/coco/pose_iter_440000.caffemodel
 .vscode/
 
 Mod5_FashionRecommendations-master/
+
+static/*
+models/*
+
+**__pycache__**
