@@ -1,6 +1,6 @@
 # clothing-recommender-webapp
 
-![App demo](https://github.com/RomainBarraud/clothing-recommender-webapp/images/eight_screens.png)
+![App demo](https://github.com/RomainBarraud/clothing-recommender-webapp/master/images/eight_screens.png)
 
 ## Authors
  - LEE, Sum Yin Sonny
