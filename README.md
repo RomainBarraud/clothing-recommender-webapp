@@ -15,16 +15,16 @@ A user will upload a photo and obtain in return a series of up to 3 clothes matc
 1. The user access the webapp webpage
 2. The user uploads a photo
 3. A first model detects up to 18 body-points on the photo
-4. The model returns 4 frames on the photo<br/>
-&ensp; 4.1 Head<br/>
-&ensp; 4.2 Upper body<br/>
-&ensp; 4.3 Lower body<br/>
-&ensp; 4.4 Whole body<br/>
+4. The model returns 4 frames on the photo
+    4.1 Head
+    4.2 Upper body
+    4.3 Lower body
+    4.4 Whole body
 5. A second model checks whether the head is a woman's or a man's
-6. If 5. is true, the whole body, upper body and lower body images will sequentially go through a dedicated model analyzing the piece of cloth<br/>
-&ensp; 6.1 Upper body clothing<br/>
-&ensp; 6.2 Lower body clothing<br/>
-&ensp; 6.3 Whole body clothing<br/>
+6. If 5. is true, the whole body, upper body and lower body images will sequentially go through a dedicated model analyzing the piece of cloth
+    6.1 Upper body clothing
+    6.2 Lower body clothing
+    6.3 Whole body clothing
 7. Each model will return embedding vector representing the probabilities of belonging to a class of cloth
 8. Each class will, crossed with the gender, will lead to display a relevant pool of available clothes. The chose photo in a given pool will be drawn randomly
 9. The web app will display the uploaded photo, the same photo with the 3 frames 4.1, 4.2 and 4.3, and the 2 recommended pieces of clothes
