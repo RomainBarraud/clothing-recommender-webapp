@@ -8,17 +8,14 @@ import tensorflow as tf
 from cv2 import cv2
 
 
-IMG_HEIGHT = 256
-IMG_WIDTH = 256
-
 model_upper_body = tf.keras.models.load_model("./models/model_upper.h5")
 
 UPPER_CATEGORY = ['Jacket', 'Sweater', 'Tee', 'Blazer']
 
 
-def predict_upper(img_np, IMG_HEIGHT, IMG_WIDTH):
+def predict_upper(image, IMG_HEIGHT, IMG_WIDTH):
     print("in predict upper")
-    image = cv2.imread(img_np)
+    print(image)
     image = cv2.resize(image, (IMG_HEIGHT, IMG_WIDTH))
     print(image.shape)
     image = np.expand_dims(image, 0)
@@ -37,15 +34,15 @@ app = Flask(__name__)
 def predictor():
     if request.method == 'POST':
         data = request.json
-        image = data['image']
+        image = np.array(data['image'])
+        image = image.astype('float32')
         IMG_HEIGHT = data['IMG_HEIGHT']
         IMG_WIDTH = data['IMG_WIDTH']
+        print(jsonify(clothing=predict_upper(image, IMG_HEIGHT, IMG_WIDTH)))
 
-        return predict_upper(image, IMG_HEIGHT, IMG_WIDTH)
+        return jsonify(clothing=predict_upper(image, IMG_HEIGHT, IMG_WIDTH))
 
 
 if __name__ == "__main__":
     app.debug = True
     app.run(host="127.0.0.1", port=5011)
-
-

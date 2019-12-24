@@ -2,6 +2,8 @@ from flask import Flask, request, jsonify, render_template, url_for
 from werkzeug.utils import secure_filename
 import os
 import time
+import json
+import requests
 import numpy as np
 import tensorflow as tf
 
@@ -10,6 +12,7 @@ from cv2 import cv2
 import pose_detector
 import clothing_classfiers
 
+API_URL_UPPER = 'http://127.0.0.1:5011'
 
 IMG_GENDER_HEIGHT = 150
 IMG_GENDER_WIDTH = 150
@@ -64,9 +67,16 @@ def render_home():
             image_head = cv2.imread(os.path.join("./static/uploaded_pictures" , str(img_name_short) + '_Head.jpg'), cv2.IMREAD_GRAYSCALE)
             gender = clothing_classfiers.predict_gender(image_head, IMG_GENDER_HEIGHT, IMG_GENDER_WIDTH)
 
-            image_upper = cv2.imread(os.path.join("./static/uploaded_pictures" , str(img_name_short) + '_Upper.jpg'))
-            clothing_upper = clothing_classfiers.predict_upper(image_upper, IMG_HEIGHT, IMG_WIDTH)
-            clothing_upper_path = os.path.join(INVENTORY_PATH, clothing_upper)
+            image_upper = cv2.imread(os.path.join("./static/uploaded_pictures" , str(img_name_short) + '_Upper.jpg'), )
+            print("image upper list: ", image_upper.tolist())
+            upper_load = {'image': image_upper.tolist(), 'IMG_HEIGHT': IMG_HEIGHT, 'IMG_WIDTH': IMG_WIDTH}
+            print("Will call remote instance")
+            clothing_upper = requests.post(url=API_URL_UPPER, json=upper_load)
+            print("clothing_upper: ", clothing_upper)
+            print("insideText: ", clothing_upper.text)
+            print("insideText_2: ", clothing_upper.json()['clothing'])
+            #clothing_upper = clothing_classfiers.predict_upper(image_upper, IMG_HEIGHT, IMG_WIDTH)
+            clothing_upper_path = os.path.join(INVENTORY_PATH, clothing_upper.json()['clothing'])
 
             if photo_analyser: # found lower clothing
                 image_lower = cv2.imread(os.path.join("./static/uploaded_pictures" , str(img_name_short) + '_Lower.jpg'))
