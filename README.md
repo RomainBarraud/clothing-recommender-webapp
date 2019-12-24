@@ -66,9 +66,9 @@ Load the four h5 models, or rerun the notebooks, to classify respectively the fa
  - GNU GENERAL PUBLIC LICENSE
 
 ## Version
-| Date       | Description   |
-|:----------:|:--------------|
-| 12/15/2019 |  Draft        |
-| 12/19/2019 |  v1           |
-
+| Date       | Description                            |
+|:----------:|:---------------------------------------|
+| 12/15/2019 |  v0 Draft                              |
+| 12/19/2019 |  v1 Workiing                           |
+| 12/24/2019 |  v2 Upper body separate instance       |
 
