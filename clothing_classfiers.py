@@ -16,8 +16,8 @@ UPPER_CATEGORY = ['Jacket', 'Sweater', 'Tee', 'Blazer']
 LOWER_CATEGORY = ['Jeans', 'Shorts', 'Skirt']
 WHOLE_CATEGORY = ['Dress', 'Jumpsuit', 'Kimono']
 
-def predict_gender(image, IMG_GENDER_HEIGHT, IMG_GENDER_WIDTH):
-    image = cv2.resize(image, (IMG_GENDER_HEIGHT, IMG_GENDER_WIDTH))
+def predict_gender(image, IMG_HEIGHT, IMG_WIDTH):
+    image = cv2.resize(image, (IMG_HEIGHT, IMG_WIDTH))
     image = np.expand_dims(image, -1)
     image = np.expand_dims(image, 0)
     image = tf.cast(image, tf.float32)

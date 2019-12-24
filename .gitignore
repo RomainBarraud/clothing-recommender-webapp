@@ -18,5 +18,9 @@ Mod5_FashionRecommendations-master/
 
 static/*
 models/*
+instance_gender/models/*
+instance_upper/models/*
+instance_lower/models/*
+instance_whole/models/*
 
 **__pycache__**
