@@ -10,11 +10,12 @@ import tensorflow as tf
 from cv2 import cv2
 
 import pose_detector
-import clothing_classfiers
+#import clothing_classfiers
 
 API_URL_UPPER = 'http://127.0.0.1:5011'
 API_URL_LOWER = 'http://127.0.0.1:5021'
 API_URL_WHOLE = 'http://127.0.0.1:5031'
+API_URL_GENDER = 'http://127.0.0.1:5041'
 
 IMG_GENDER_HEIGHT = 150
 IMG_GENDER_WIDTH = 150
@@ -67,7 +68,9 @@ def render_home():
             photo_analyser = pose_detector.pose_main(img_path, img_name_short)
 
             image_head = cv2.imread(os.path.join("./static/uploaded_pictures" , str(img_name_short) + '_Head.jpg'), cv2.IMREAD_GRAYSCALE)
-            gender = clothing_classfiers.predict_gender(image_head, IMG_GENDER_HEIGHT, IMG_GENDER_WIDTH)
+            head_load = {'image': image_head.tolist(), 'IMG_HEIGHT': IMG_GENDER_HEIGHT, 'IMG_WIDTH': IMG_GENDER_WIDTH}
+            gender_prediction = requests.post(url=API_URL_GENDER, json=head_load)
+            #gender = clothing_classfiers.predict_gender(image_head, IMG_GENDER_HEIGHT, IMG_GENDER_WIDTH)
 
             image_upper = cv2.imread(os.path.join("./static/uploaded_pictures" , str(img_name_short) + '_Upper.jpg'), )
             print("image upper list: ", image_upper.tolist())

@@ -17,7 +17,11 @@ def predict_clothing(image, IMG_HEIGHT, IMG_WIDTH):
     print("in predict upper")
     print(image)
     image = cv2.resize(image, (IMG_HEIGHT, IMG_WIDTH))
-    print(image.shape)
+    #image = cv2.divide(image, scale=255)
+    image = tf.cast(image, tf.float32)
+    #image = tf.math.divide(image, 255.0)
+    #image = image / 255.0
+    print(image)
     image = np.expand_dims(image, 0)
     image = tf.cast(image, tf.float32)
     print("image shape:", image.shape)
