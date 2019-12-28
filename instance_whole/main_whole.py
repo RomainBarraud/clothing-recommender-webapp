@@ -8,13 +8,13 @@ import tensorflow as tf
 from cv2 import cv2
 
 
-model_clothing = tf.keras.models.load_model("./models/model_upper.h5")
+model_clothing = tf.keras.models.load_model("./models/model_whole.h5")
 
-CLOTHING_CATEGORY = ['Jacket', 'Sweater', 'Tee', 'Blazer']
+CLOTHING_CATEGORY = ['Dress', 'Jumpsuit', 'Kimono']
 
 
 def predict_clothing(image, IMG_HEIGHT, IMG_WIDTH):
-    print("in predict upper")
+    print("in predict whole")
     print(image)
     image = cv2.resize(image, (IMG_HEIGHT, IMG_WIDTH))
     print(image.shape)
@@ -45,4 +45,4 @@ def predictor():
 
 if __name__ == "__main__":
     app.debug = True
-    app.run(host="127.0.0.1", port=5011)
+    app.run(host="127.0.0.1", port=5031)

@@ -13,6 +13,8 @@ import pose_detector
 import clothing_classfiers
 
 API_URL_UPPER = 'http://127.0.0.1:5011'
+API_URL_LOWER = 'http://127.0.0.1:5021'
+API_URL_WHOLE = 'http://127.0.0.1:5031'
 
 IMG_GENDER_HEIGHT = 150
 IMG_GENDER_WIDTH = 150
@@ -70,23 +72,32 @@ def render_home():
             image_upper = cv2.imread(os.path.join("./static/uploaded_pictures" , str(img_name_short) + '_Upper.jpg'), )
             print("image upper list: ", image_upper.tolist())
             upper_load = {'image': image_upper.tolist(), 'IMG_HEIGHT': IMG_HEIGHT, 'IMG_WIDTH': IMG_WIDTH}
-            print("Will call remote instance")
+            print("Will call upper instance")
             clothing_upper = requests.post(url=API_URL_UPPER, json=upper_load)
             print("clothing_upper: ", clothing_upper)
             print("insideText: ", clothing_upper.text)
             print("insideText_2: ", clothing_upper.json()['clothing'])
             #clothing_upper = clothing_classfiers.predict_upper(image_upper, IMG_HEIGHT, IMG_WIDTH)
             clothing_upper_path = os.path.join(INVENTORY_PATH, clothing_upper.json()['clothing'])
-
+            print("passed upper")
             if photo_analyser: # found lower clothing
+                print("Will call lower instance")
                 image_lower = cv2.imread(os.path.join("./static/uploaded_pictures" , str(img_name_short) + '_Lower.jpg'))
-                clothing_lower = clothing_classfiers.predict_lower(image_lower, IMG_HEIGHT, IMG_WIDTH)
-                clothing_lower_path = os.path.join(INVENTORY_PATH, clothing_lower)
-
+                lower_load = {'image': image_lower.tolist(), 'IMG_HEIGHT': IMG_HEIGHT, 'IMG_WIDTH': IMG_WIDTH}
+                print("Will post lower instance")
+                clothing_lower = requests.post(url=API_URL_LOWER, json=lower_load)
+                print("passed post lower")
+                #clothing_lower = clothing_classfiers.predict_lower(image_lower, IMG_HEIGHT, IMG_WIDTH)
+                clothing_lower_path = os.path.join(INVENTORY_PATH, clothing_lower.json()['clothing'])
+            print("passed lower")
             image_whole = cv2.imread(os.path.join("./static/uploaded_pictures" , str(img_name_short) + '_Whole.jpg'))
-            clothing_whole = clothing_classfiers.predict_whole(image_whole, IMG_HEIGHT, IMG_WIDTH)
-            clothing_whole_path = os.path.join(INVENTORY_PATH, clothing_whole)
-
+            print("Will call whole instance")
+            whole_load = {'image': image_whole.tolist(), 'IMG_HEIGHT': IMG_HEIGHT, 'IMG_WIDTH': IMG_WIDTH}
+            print("Will post whole instance")
+            clothing_whole = requests.post(url=API_URL_WHOLE, json=whole_load)
+            #clothing_whole = clothing_classfiers.predict_whole(image_whole, IMG_HEIGHT, IMG_WIDTH)
+            clothing_whole_path = os.path.join(INVENTORY_PATH, clothing_whole.json()['clothing'])
+            print("passed whole")
             clothing_boxed = cv2.imread(os.path.join("./static/uploaded_pictures" , str(img_name_short) + '_Boxed.jpg'))
 
             return render_template('recommendations.html')
